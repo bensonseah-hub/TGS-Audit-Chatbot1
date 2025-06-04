@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify, send_file
-import openai
+from openai import OpenAI
 import os
 
 app = Flask(__name__)
-client = openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# ✅ Create the OpenAI client properly
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/")
 def home():
@@ -18,8 +20,9 @@ def chat():
         return jsonify({"error": "Invalid input"}), 400
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo" or "gpt-4"
+        # ✅ Use the new OpenAI v1.x chat API format
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",  # or "gpt-4" if available
             messages=[
                 {"role": "system", "content": "You are an audit assistant helping staff with MFRS, MPERS, ISA and firm policy."},
                 {"role": "user", "content": user_input}
