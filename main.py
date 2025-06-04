@@ -3,7 +3,7 @@ import openai
 import os
 
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/")
 def home():
@@ -19,13 +19,14 @@ def chat():
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo" or "gpt-4"
             messages=[
                 {"role": "system", "content": "You are an audit assistant helping staff with MFRS, MPERS, ISA and firm policy."},
                 {"role": "user", "content": user_input}
             ]
         )
-        return jsonify({"reply": response.choices[0].message["content"]})
+        reply = response.choices[0].message.content
+        return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
